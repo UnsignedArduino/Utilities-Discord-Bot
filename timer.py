@@ -44,18 +44,17 @@ def add_timer_as_embed(guild: str, name: str = f"timer{len(timers)}") -> Embed:
         return Embed(title="⏲ Timer ⏲", description=f"Timer named {repr(name)} successfully created!")
 
 
-def list_timers_nice_text(guild: str) -> str:
-    text = "```\n⏲ Timers found: ⏲\n"
+def list_timers_as_embed(guild: str) -> Embed:
+    embed = Embed(title="⏲ Timer ⏲", description="Timers found:")
     if guild not in timers:
         timers[guild] = {}
     if len(timers[guild]) > 0:
         for name, timer in timers[guild].items():
             timer.update()
-            text += f" - {repr(name)}: {timer.pretty_time} - {'Running' if timer.timing else 'Paused'}\n"
+            embed.add_field(name=repr(name), value=f"{timer.pretty_time} - {'Running' if timer.timing else 'Paused'}", inline=False)
     else:
-        text += "No timers found! Create one with \"/add-timer\"!\n"
-    text += "```"
-    return text
+        embed.add_field(name="No timers found!", value="Create a timer with \"/add-timer\"!", inline=True)
+    return embed
 
 
 def update_timer(guild: str, name: str) -> None:

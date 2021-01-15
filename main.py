@@ -8,7 +8,7 @@ from dice import roll_as_embed
 
 from ping import ping_as_embed
 
-from timer import add_timer_as_embed, list_timers_nice_text, remove_timer_nice_text
+from timer import add_timer_as_embed, list_timers_as_embed, remove_timer_nice_text
 from timer import pause_timer_nice_text, resume_timer_nice_text, get_timer_nice_text
 
 from create_logger import create_logger
@@ -60,9 +60,9 @@ async def add_timer(ctx, name: str):
 async def list_timers(ctx):
     logger.debug(f"Timer list requested from {repr(ctx.guild)}")
     logger.debug(f"Parameters: None!")
-    text = list_timers_nice_text(guild=str(ctx.guild))
-    logger.debug(f"Sent: {repr(text)}")
-    await ctx.send(text)
+    embed = list_timers_as_embed(guild=str(ctx.guild))
+    logger.debug(f"Sent: {repr(embed)}")
+    await ctx.send(embed=embed)
 
 
 # TODO: Switch to embed
