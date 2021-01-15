@@ -101,3 +101,13 @@ def resume_timer_nice_text(guild: str, name: str) -> str:
     else:
         return f"```\n⏲ Timer with name {repr(name)} resumed! ⏲\n```"
 
+
+def get_timer_nice_text(guild: str, name: str) -> tuple:
+    try:
+        timer = timers[guild][name]
+        timer.update()
+    except KeyError:
+        return f"```\n⚠ Error! ⚠ Could not find that timer! Use \"/list-timers\" to list all timers!\n```", False, None
+    else:
+        return f"```\n⏲ {repr(name)}: {timer.pretty_time} - {'Running' if timer.timing else 'Paused'} ⏲\n```", True, \
+               timer.pretty_time

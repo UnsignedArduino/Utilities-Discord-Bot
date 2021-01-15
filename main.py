@@ -1,13 +1,14 @@
 import os
 from discord.ext import commands
 from dotenv import load_dotenv
+import asyncio
 
 from dice import roll_nice_text
 
 from ping import ping_nice_text
 
 from timer import add_timer_nice_text, list_timers_nice_text, remove_timer_nice_text
-from timer import pause_timer_nice_text, resume_timer_nice_text
+from timer import pause_timer_nice_text, resume_timer_nice_text, get_timer_nice_text
 
 from create_logger import create_logger
 import logging
@@ -87,6 +88,40 @@ async def resume_timer(ctx, name: str):
     text = resume_timer_nice_text(guild=str(ctx.guild), name=name)
     logger.debug(f"Sent: {repr(text)}")
     await ctx.send(text)
+
+
+showing_timer = {}
+
+
+@bot.command(name="show-timer")
+async def show_timer(ctx, name: str):
+    logger.debug(f"Timer to be shown requested from {repr(ctx.guild)}")
+    logger.debug(f"Parameters: name = {repr(name)}")
+    if ctx.guild not in showing_timer:
+        showing_timer[ctx.guild] = False
+    if showing_timer[ctx.guild]:
+        message = await ctx.send(f"```\n⏲ Please wait, un-showing other timer! ⏲\n```")
+        showing_timer[ctx.guild] = False
+        await asyncio.sleep(3)
+        await message.delete()
+    text, con, _ = get_timer_nice_text(guild=str(ctx.guild), name=name)
+    showing_timer[ctx.guild] = con
+    logger.debug(f"Sent: {repr(text)}")
+    message = await ctx.send(text)
+    while True:
+        await asyncio.sleep(1)
+        text, con, time = get_timer_nice_text(guild=str(ctx.guild), name=name)
+        if not showing_timer[ctx.guild]:
+            if time is None:
+                await message.edit(content=f"```\n⏲ Timer removed! ⏲\n```")
+                break
+            else:
+                await message.edit(content=f"```\n⏲ Un-shown because you showed another timer or "
+                                           "the timer does not exist! ⏲\n```")
+                break
+        showing_timer[ctx.guild] = con
+        logger.debug(f"Sent: {repr(text)}")
+        await message.edit(content=text)
 
 
 @bot.event
