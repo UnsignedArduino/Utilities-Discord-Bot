@@ -113,7 +113,7 @@ async def show_timer(ctx, name: str):
     while True:
         await asyncio.sleep(1)
         embed, con = get_timer_as_embed(guild=str(ctx.guild), name=name)
-        if not showing_timer[ctx.guild]:
+        if not showing_timer[ctx.guild] or not con:
             await message.edit(embed=Embed(title="⏲ Timer ⏲",
                                            description="Un-shown because you showed another timer, hid it, removed it, "
                                                        "or the timer does not exist!"))
