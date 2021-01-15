@@ -9,7 +9,7 @@ from dice import roll_as_embed
 from ping import ping_as_embed
 
 from timer import add_timer_as_embed, list_timers_as_embed, remove_timer_as_embed
-from timer import pause_timer_as_embed, resume_timer_as_embed, get_timer_nice_text
+from timer import pause_timer_as_embed, resume_timer_as_embed, get_timer_as_embed
 
 from create_logger import create_logger
 import logging
@@ -94,7 +94,7 @@ async def resume_timer(ctx, name: str):
 showing_timer = {}
 
 
-# TODO: Switch to embed
+# TODO: Add command "hide-timer" which stops updating timer
 @bot.command(name="show-timer")
 async def show_timer(ctx, name: str):
     logger.debug(f"Timer to be shown requested from {repr(ctx.guild)}")
@@ -106,24 +106,19 @@ async def show_timer(ctx, name: str):
         showing_timer[ctx.guild] = False
         await asyncio.sleep(3)
         await message.delete()
-    text, con, _ = get_timer_nice_text(guild=str(ctx.guild), name=name)
-    showing_timer[ctx.guild] = con
-    logger.debug(f"Sent: {repr(text)}")
-    message = await ctx.send(text)
+    embed, con = get_timer_as_embed(guild=str(ctx.guild), name=name)
+    showing_timer[ctx.guild] = True
+    logger.debug(f"Sent: {repr(embed)}")
+    message = await ctx.send(embed=embed)
     while True:
         await asyncio.sleep(1)
-        text, con, time = get_timer_nice_text(guild=str(ctx.guild), name=name)
+        embed, con = get_timer_as_embed(guild=str(ctx.guild), name=name)
         if not showing_timer[ctx.guild]:
-            if time is None:
-                await message.edit(content=f"```\n⏲ Timer removed! ⏲\n```")
-                break
-            else:
-                await message.edit(content=f"```\n⏲ Un-shown because you showed another timer or "
-                                           "the timer does not exist! ⏲\n```")
-                break
-        showing_timer[ctx.guild] = con
-        logger.debug(f"Sent: {repr(text)}")
-        await message.edit(content=text)
+            await message.edit(embed=f"```\n⏲ Un-shown because you showed another timer, hid it, removed it, or "
+                                     "the timer does not exist! ⏲\n```")
+            break
+        logger.debug(f"Sent: {repr(embed)}")
+        await message.edit(embed=embed)
 
 
 @bot.event
