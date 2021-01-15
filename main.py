@@ -94,7 +94,6 @@ async def resume_timer(ctx, name: str):
 showing_timer = {}
 
 
-# TODO: Add command "hide-timer" which stops updating timer
 @bot.command(name="show-timer")
 async def show_timer(ctx, name: str):
     logger.debug(f"Timer to be shown requested from {repr(ctx.guild)}")
@@ -102,7 +101,7 @@ async def show_timer(ctx, name: str):
     if ctx.guild not in showing_timer:
         showing_timer[ctx.guild] = False
     if showing_timer[ctx.guild]:
-        message = await ctx.send(f"```\n⏲ Please wait, un-showing other timer! ⏲\n```")
+        message = await ctx.send(embed=Embed(title="⏲ Timer ⏲", description="Please wait, un-showing other timer!"))
         showing_timer[ctx.guild] = False
         await asyncio.sleep(3)
         await message.delete()
@@ -114,19 +113,30 @@ async def show_timer(ctx, name: str):
         await asyncio.sleep(1)
         embed, con = get_timer_as_embed(guild=str(ctx.guild), name=name)
         if not showing_timer[ctx.guild]:
-            await message.edit(embed=f"```\n⏲ Un-shown because you showed another timer, hid it, removed it, or "
-                                     "the timer does not exist! ⏲\n```")
+            await message.edit(embed=Embed(title="⏲ Timer ⏲",
+                                           description="Un-shown because you showed another timer, hid it, removed it, "
+                                                       "or the timer does not exist!"))
             break
         logger.debug(f"Sent: {repr(embed)}")
         await message.edit(embed=embed)
 
 
-@bot.event
-async def on_command_error(ctx, error):
-    embed = Embed(title="⚠ Error! ⚠", description="Uh oh, an error occurred!")
-    embed.add_field(name="Error", value=error, inline=True)
-    logger.warning(f"An error occurred! Sent: {repr(embed)}")
-    await ctx.send(embed=embed)
+@bot.command(name="hide-timers")
+async def hide_timers(ctx):
+    logger.debug(f"Timer to be hidden requested from {repr(ctx.guild)}")
+    logger.debug(f"Parameters: None")
+    showing_timer[ctx.guild] = False
+    message = await ctx.send(embed=Embed(title="⏲ Timer ⏲", description="Stopping live timer updates..."))
+    await asyncio.sleep(2)
+    await message.edit(embed=Embed(title="⏲ Timer ⏲", description="Successfully stopped live timer updates!"))
+
+
+# @bot.event
+# async def on_command_error(ctx, error):
+#     embed = Embed(title="⚠ Error! ⚠", description="Uh oh, an error occurred!")
+#     embed.add_field(name="Error", value=error, inline=True)
+#     logger.warning(f"An error occurred! Sent: {repr(embed)}")
+#     await ctx.send(embed=embed)
 
 
 logger.debug(f"Connecting to Discord...")
