@@ -48,7 +48,7 @@ async def roll(ctx, sides: int = 6, times: int = 1):
 async def add_timer(ctx, name: str):
     logger.debug(f"Timer to be made requested from {repr(ctx.guild)}")
     logger.debug(f"Parameters: name = {repr(name)}")
-    text = add_timer_nice_text(name=name)
+    text = add_timer_nice_text(guild=str(ctx.guild), name=name)
     logger.debug(f"Sent: {repr(text)}")
     await ctx.send(text)
 
@@ -57,7 +57,7 @@ async def add_timer(ctx, name: str):
 async def list_timers(ctx):
     logger.debug(f"Timer list requested from {repr(ctx.guild)}")
     logger.debug(f"Parameters: None!")
-    text = list_timers_nice_text()
+    text = list_timers_nice_text(guild=str(ctx.guild))
     logger.debug(f"Sent: {repr(text)}")
     await ctx.send(text)
 
@@ -66,7 +66,7 @@ async def list_timers(ctx):
 async def remove_timer(ctx, name: str):
     logger.debug(f"Timer to be popped requested from {repr(ctx.guild)}")
     logger.debug(f"Parameters: name = {repr(name)}")
-    text = remove_timer_nice_text(name=name)
+    text = remove_timer_nice_text(guild=str(ctx.guild), name=name)
     logger.debug(f"Sent: {repr(text)}")
     await ctx.send(text)
 
@@ -75,7 +75,7 @@ async def remove_timer(ctx, name: str):
 async def pause_timer(ctx, name: str):
     logger.debug(f"Timer to be paused requested from {repr(ctx.guild)}")
     logger.debug(f"Parameters: name = {repr(name)}")
-    text = pause_timer_nice_text(name=name)
+    text = pause_timer_nice_text(guild=str(ctx.guild), name=name)
     logger.debug(f"Sent: {repr(text)}")
     await ctx.send(text)
 
@@ -84,7 +84,7 @@ async def pause_timer(ctx, name: str):
 async def resume_timer(ctx, name: str):
     logger.debug(f"Timer to be resumed requested from {repr(ctx.guild)}")
     logger.debug(f"Parameters: name = {repr(name)}")
-    text = resume_timer_nice_text(name=name)
+    text = resume_timer_nice_text(guild=str(ctx.guild), name=name)
     logger.debug(f"Sent: {repr(text)}")
     await ctx.send(text)
 
