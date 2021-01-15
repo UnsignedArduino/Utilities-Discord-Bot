@@ -37,5 +37,12 @@ async def roll(ctx, sides: int = 6, times: int = 1):
     await ctx.send(text)
 
 
+@bot.event
+async def on_command_error(ctx, error):
+    text = f"```\n⚠ Uh oh, the error was too fast for us to catch! ⚠\nError: {repr(error)}\n```"
+    logger.warning(f"An error occurred! Sent: {repr(text)}")
+    await ctx.send(text)
+
+
 logger.debug(f"Connecting to Discord...")
 bot.run(TOKEN)
