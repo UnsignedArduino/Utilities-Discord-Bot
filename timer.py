@@ -1,3 +1,4 @@
+from discord import Embed
 from time import time as unix
 from datetime import timedelta
 
@@ -34,13 +35,13 @@ def add_timer(guild: str, name: str = f"timer{len(timers)}") -> None:
         raise DuplicateTimerError
 
 
-def add_timer_nice_text(guild: str, name: str = f"timer{len(timers)}") -> str:
+def add_timer_as_embed(guild: str, name: str = f"timer{len(timers)}") -> Embed:
     try:
         add_timer(guild=guild, name=name)
     except DuplicateTimerError:
-        return f"```\n⚠ Error! ⚠ A timer with the same name is already in use!\n```"
+        return Embed(title="⚠ Error! ⚠", description="A timer with the same name is already in use!")
     else:
-        return f"```\n⏲ Timer with name {repr(name)} successfully created! ⏲\n```"
+        return Embed(title="⏲ Timer ⏲", description=f"Timer named {repr(name)} successfully created!")
 
 
 def list_timers_nice_text(guild: str) -> str:
