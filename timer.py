@@ -80,13 +80,14 @@ def pause_timer(guild: str, name: str) -> None:
     timers[guild][name].timing = False
 
 
-def pause_timer_nice_text(guild: str, name: str) -> str:
+def pause_timer_as_embed(guild: str, name: str) -> Embed:
     try:
         pause_timer(guild=guild, name=name)
     except KeyError:
-        return f"```\n⚠ Error! ⚠ Could not find that timer! Use \"/list-timers\" to list all timers!\n```"
+        return Embed(title="⚠ Error! ⚠", description="Could not find a timer with that name! "
+                                                     "Use \"/list-timers\" to list all timers!")
     else:
-        return f"```\n⏲ Timer with name {repr(name)} paused! ⏲\n```"
+        return Embed(title="⏲ Timer ⏲", description=f"Timer named {repr(name)} paused!")
 
 
 def resume_timer(guild: str, name: str) -> None:
