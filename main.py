@@ -8,7 +8,7 @@ from dice import roll_as_embed
 
 from ping import ping_as_embed
 
-from timer import add_timer_as_embed, list_timers_as_embed, remove_timer_as_embed
+from timer import add_timer_as_embed, list_timers_as_embed, remove_timer_as_embed, clear_all_timers_as_embed
 from timer import pause_timer_as_embed, resume_timer_as_embed, get_timer_as_embed
 
 from create_logger import create_logger
@@ -131,12 +131,20 @@ async def hide_timers(ctx):
     await message.edit(embed=Embed(title="⏲ Timer ⏲", description="Successfully stopped live timer updates!"))
 
 
-# @bot.event
-# async def on_command_error(ctx, error):
-#     embed = Embed(title="⚠ Error! ⚠", description="Uh oh, an error occurred!")
-#     embed.add_field(name="Error", value=error, inline=True)
-#     logger.warning(f"An error occurred! Sent: {repr(embed)}")
-#     await ctx.send(embed=embed)
+@bot.command(name="clear-all-timers")
+async def clear_all_timers(ctx):
+    logger.debug(f"All timers to be cleared requested from {repr(ctx.guild)}")
+    logger.debug(f"Parameters: None")
+    embed = clear_all_timers_as_embed(guild=str(ctx.guild))
+    await ctx.send(embed=embed)
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    embed = Embed(title="⚠ Error! ⚠", description="Uh oh, an error occurred!")
+    embed.add_field(name="Error", value=error, inline=True)
+    logger.warning(f"An error occurred! Sent: {repr(embed)}")
+    await ctx.send(embed=embed)
 
 
 logger.debug(f"Connecting to Discord...")

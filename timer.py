@@ -75,6 +75,19 @@ def remove_timer_as_embed(guild: str, name: str) -> Embed:
         return Embed(title="⏲ Timer ⏲", description=f"Timer named {repr(name)} successfully deleted!")
 
 
+def clear_all_timers(guild: str) -> None:
+    timers[guild].clear()
+
+
+def clear_all_timers_as_embed(guild: str) -> Embed:
+    try:
+        clear_all_timers(guild=guild)
+    except KeyError:
+        return Embed(title="⏲ Timer ⏲", description="No timers to delete!")
+    else:
+        return Embed(title="⏲ Timer ⏲", description="Successfully deleted all timers!")
+
+
 def pause_timer(guild: str, name: str) -> None:
     update_timer(guild=guild, name=name)
     timers[guild][name].timing = False
