@@ -1,3 +1,4 @@
+from discord import Embed
 import random
 
 
@@ -8,14 +9,11 @@ def roll(sides: int = 6, times: int = 1) -> list:
     return dice_rolls
 
 
-def roll_nice_text(sides: int = 6, times: int = 1) -> tuple:
-    text = "```\n🎲 You got: "
-    values = []
+def roll_as_embed(sides: int = 6, times: int = 1) -> Embed:
+    times = min(23, times)
+    embed = Embed(title="🎲 You rolled: 🎲")
+    embed.add_field(name="Sides", value=str(sides), inline=True)
+    embed.add_field(name="Times", value=str(times), inline=True)
     for index, value in enumerate(roll(sides=sides, times=times)):
-        if index == 0:
-            text += str(value)
-        else:
-            text += f", {value}"
-        values += str(value)
-    text += "! 🎲\n```"
-    return text, values
+        embed.add_field(name=f"Roll #{index+1}", value=str(value), inline=True)
+    return embed

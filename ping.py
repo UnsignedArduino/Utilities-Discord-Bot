@@ -1,3 +1,6 @@
+from discord import Embed
+
+
 def ping(bot, times: int = 1) -> tuple:
     average = round(bot.latency * 1000)
     minimum = average
@@ -13,9 +16,13 @@ def ping(bot, times: int = 1) -> tuple:
     return average, minimum, maximum
 
 
-def ping_nice_text(bot, times: int = 1) -> tuple:
+def ping_as_embed(bot, times: int = 1) -> Embed:
     times = round(times)
     average, minimum, maximum = ping(bot, times=times)
+    embed = Embed(title="🏓 Pong! 🏓")
+    embed.add_field(name="Ping is", value=average, inline=True)
     if times > 1:
-        return f"```\n🏓 Pong! 🏓 Ping is {average} ms! (Averaged over {times} times)\nFastest: {minimum}\nSlowest: {maximum}```", average
-    return f"```\n🏓 Pong! 🏓 Ping is {average} ms!\n```", average
+        embed.add_field(name="Minimum", value=minimum, inline=True)
+        embed.add_field(name="Maximum", value=maximum, inline=True)
+        embed.add_field(name="Times", value=str(times), inline=True)
+    return embed
