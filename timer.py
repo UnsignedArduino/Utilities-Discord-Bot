@@ -65,13 +65,14 @@ def remove_timer(guild: str, name: str) -> None:
     timers[guild].pop(name)
 
 
-def remove_timer_nice_text(guild: str, name: str) -> str:
+def remove_timer_as_embed(guild: str, name: str) -> Embed:
     try:
         remove_timer(guild=guild, name=name)
     except KeyError:
-        return f"```\n⚠ Error! ⚠ Could not find that timer! Use \"/list-timers\" to list all timers!\n```"
+        return Embed(title="⚠ Error! ⚠", description="Could not find a timer with that name! "
+                                                     "Use \"/list-timers\" to list all timers!")
     else:
-        return f"```\n⏲ Timer with name {repr(name)} successfully deleted! ⏲\n```"
+        return Embed(title="⏲ Timer ⏲", description=f"Timer named {repr(name)} successfully deleted!")
 
 
 def pause_timer(guild: str, name: str) -> None:
